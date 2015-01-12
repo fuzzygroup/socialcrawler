@@ -5,13 +5,13 @@ require 'socialcrawler/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "socialcrawler"
-  spec.version       = Socialcrawler::VERSION
+  spec.version       = SocialCrawler::VERSION
   spec.authors       = ["Ivica Ceraj"]
   spec.email         = ["iceraj@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
-  spec.license       = "MIT"
+  spec.summary       = %q{SocialCrawler looks for social media links for different sites}
+  spec.description   = %q{It read file containing list of urls and produces output file with domain, page title, twitter, facebook and google plus handles found on the page}
+  spec.homepage      = "http://github.com/iceraj/socialcrawler"
+  spec.license       = "LGPL 2.1"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
@@ -20,4 +20,9 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "semantic", "~> 1.0"
+  spec.add_development_dependency "simplecov", "~> 0.9"
+  spec.add_development_dependency "simplecov-html", "~> 0.8"
+
+
 end
