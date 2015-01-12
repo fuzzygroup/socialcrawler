@@ -1,3 +1,6 @@
+[![Coverage Status](https://img.shields.io/coveralls/iceraj/socialcrawler.svg)](https://coveralls.io/r/iceraj/socialcrawler)
+[![Build Status](https://travis-ci.org/iceraj/socialcrawler.svg?branch=feature%2FIntial_Development)](https://travis-ci.org/iceraj/socialcrawler)
+
 # Socialcrawler
 
 SocialCrawler looks for social media links for different sites
