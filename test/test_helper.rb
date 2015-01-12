@@ -1,7 +1,8 @@
+require 'simplecov'
 require 'coveralls'
-Coveralls.wear!
 
-if RUBY_VERSION > 1.9
-  require 'simplecov'
-  SimpleCov.start
-end
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+    SimpleCov::Formatter::HTMLFormatter,
+    Coveralls::SimpleCov::Formatter
+]
+SimpleCov.start
