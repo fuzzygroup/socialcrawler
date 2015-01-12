@@ -147,7 +147,9 @@ module SocialCrawler
                 :message => result[:message]
             }
             CSV.open( status_filename, "wb" ) do |status_line|
-              status_line << [url,result[:success],result[:message]]
+              status.each do |k,v|
+                status_line << [k,v[:success],v[:message]]
+              end
             end
         end
       end
