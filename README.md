@@ -1,5 +1,6 @@
 [![Coverage Status](https://img.shields.io/coveralls/iceraj/socialcrawler.svg)](https://coveralls.io/r/iceraj/socialcrawler)
 [![Build Status](https://travis-ci.org/iceraj/socialcrawler.svg?branch=feature%2FIntial_Development)](https://travis-ci.org/iceraj/socialcrawler)
+[![Code Climate](https://codeclimate.com/github/iceraj/socialcrawler/badges/gpa.svg)](https://codeclimate.com/github/iceraj/socialcrawler)
 
 # Socialcrawler
 
