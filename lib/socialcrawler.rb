@@ -104,26 +104,26 @@ module SocialCrawler
     def load_output_cache(output_list_filename, log=nil)
       data = Hash.new()
       log.info("Loading previous status from #{output_list_filename}")
-      if File.exist?(output_list_filename)
-        log.info("Loading previous status from #{output_list_filename}")
-        CSV.foreach(output_list_filename) do |row|
-          log.info("Loading #{row} #{row.count}")
-          if row.count >= 5
-            url = row[0]
-            title= row[1]
-            twitter = row[2]
-            facebook = row[3]
-            google_plus = row[4]
-            data[url] = {
-                :url => url,
-                :title => title,
-                :twitter => twitter,
-                :facebook => facebook,
-                :google_plus => google_plus
-            }
-          end
+      if not File.exist?(output_list_filename)
+        return data
+      end
+      CSV.foreach(output_list_filename) do |row|
+        log.info("Loading #{row} #{row.count}")
+        if row.count >= 5
+          url = row[0]
+          title= row[1]
+          twitter = row[2]
+          facebook = row[3]
+          google_plus = row[4]
+          data[url] = {
+              :url => url,
+              :title => title,
+              :twitter => twitter,
+              :facebook => facebook,
+              :google_plus => google_plus
+          }
+          log.info("Loading previous status from #{output_list_filename} finished, #{data.keys.length} loaded.")
         end
-        log.info("Loading previous status from #{output_list_filename} finished, #{data.keys.length} loaded.")
       end
       return data
     end
@@ -144,25 +144,28 @@ module SocialCrawler
           status.each do |k, v|
             status_line << [k, v[:success], v[:message]]
           end
+          crawl_loop(data, domain_list_filename, log, output, status, status_line)
+        end
+      end
+    end
 
-          CSV.foreach(domain_list_filename) do |row|
-            url = row[0]
-            if status.has_key?(url)
-              # already visited, skip
-            else
-              result = crawl_url(url, log)
-              if result[:success] == true
-                data[url] = result
-                output << [url, result[:title], result[:twitter], result[:facebook], result[:google_plus]]
-              end
-              status[url] = {
-                  :url => url,
-                  :result => result[:success],
-                  :message => result[:message]
-              }
-              status_line << [url, result[:success], result[:message]]
-            end
+    def crawl_loop(data, domain_list_filename, log, output, status, status_line)
+      CSV.foreach(domain_list_filename) do |row|
+        url = row[0]
+        if status.has_key?(url)
+          # already visited, skip
+        else
+          result = crawl_url(url, log)
+          if result[:success] == true
+            data[url] = result
+            output << [url, result[:title], result[:twitter], result[:facebook], result[:google_plus]]
           end
+          status[url] = {
+              :url => url,
+              :result => result[:success],
+              :message => result[:message]
+          }
+          status_line << [url, result[:success], result[:message]]
         end
       end
     end
