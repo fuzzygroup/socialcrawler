@@ -81,16 +81,17 @@ module SocialCrawler
       if not status_filename.nil? and File.exists?(status_filename)
         log.info("Loading previous status from #{status_filename}")
         CSV.foreach(status_filename) do |row|
-          if row.count >= 3
-            url = row[0]
-            result = row[1]
-            message = row[2]
-            status[url] = {
-                :url => url,
-                :result => result,
-                :message => message
-            }
+          if row.count < 3
+            next
           end
+          url = row[0]
+          result = row[1]
+          message = row[2]
+          status[url] = {
+              :url => url,
+              :result => result,
+              :message => message
+          }
         end
         log.info("Loading previous status from #{status_filename} finished, #{status.keys.length} loaded.")
       end
@@ -105,21 +106,22 @@ module SocialCrawler
       end
       CSV.foreach(output_list_filename) do |row|
         log.info("Loading #{row} #{row.count}")
-        if row.count >= 5
-          url = row[0]
-          title= row[1]
-          twitter = row[2]
-          facebook = row[3]
-          google_plus = row[4]
-          data[url] = {
-              :url => url,
-              :title => title,
-              :twitter => twitter,
-              :facebook => facebook,
-              :google_plus => google_plus
-          }
-          log.info("Loading previous status from #{output_list_filename} finished, #{data.keys.length} loaded.")
+        if row.count < 5
+          next
         end
+        url = row[0]
+        title= row[1]
+        twitter = row[2]
+        facebook = row[3]
+        google_plus = row[4]
+        data[url] = {
+            :url => url,
+            :title => title,
+            :twitter => twitter,
+            :facebook => facebook,
+            :google_plus => google_plus
+        }
+        log.info("Loading previous status from #{output_list_filename} finished, #{data.keys.length} loaded.")
       end
       return data
     end
@@ -149,20 +151,19 @@ module SocialCrawler
       CSV.foreach(domain_list_filename) do |row|
         url = row[0]
         if status.has_key?(url)
-          # already visited, skip
-        else
-          result = crawl_url(url, log)
-          if result[:success] == true
-            data[url] = result
-            output << [url, result[:title], result[:twitter], result[:facebook], result[:google_plus]]
-          end
-          status[url] = {
-              :url => url,
-              :result => result[:success],
-              :message => result[:message]
-          }
-          status_line << [url, result[:success], result[:message]]
+          next
         end
+        result = crawl_url(url, log)
+        if result[:success] == true
+          data[url] = result
+          output << [url, result[:title], result[:twitter], result[:facebook], result[:google_plus]]
+        end
+        status[url] = {
+            :url => url,
+            :result => result[:success],
+            :message => result[:message]
+        }
+        status_line << [url, result[:success], result[:message]]
       end
     end
   end
