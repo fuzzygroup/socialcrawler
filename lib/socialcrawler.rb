@@ -34,27 +34,6 @@ module SocialCrawler
       end
     end
 
-    def _put_out(data, url, output_list_filename)
-      CSV.open(output_list_filename, "wb") do |output|
-        data.each do |k, v|
-          output << [k, v[:title], v[:twitter], v[:facebook], v[:google_plus]]
-        end
-      end
-    end
-
-    def _status(status, url, result, status_filename)
-      status[url] = {
-          :url => url,
-          :result => result[:success],
-          :message => result[:message]
-      }
-      CSV.open(status_filename, "wb") do |status_line|
-        status.each do |k, v|
-          status_line << [k, v[:success], v[:message]]
-        end
-      end
-    end
-
     def crawl_url(url, log=nil)
       log = Logger.new(STDOUT) if log.nil?
       log.info("Crawling #{url}")
@@ -108,7 +87,9 @@ module SocialCrawler
                 :message => message
             }
           rescue Exception => e
+            # :nocov:
             log.info("Exception reading file #{e}")
+            # :nocov:
           end
         end
         log.info("Loading previous status from #{status_filename} finished, #{status.keys.length} loaded.")
@@ -118,9 +99,10 @@ module SocialCrawler
 
     def load_output_cache(output_list_filename, log=nil)
       data = Hash.new()
+      log.info("Loading previous status from #{output_list_filename}")
       if File.exist?(output_list_filename)
         log.info("Loading previous status from #{output_list_filename}")
-        CSV.open(output_list_filename) do |row|
+        CSV.foreach(output_list_filename) do |row|
           log.info("Loading #{row} #{row.count}")
           if row.count >= 5
             url = row[0]
@@ -150,17 +132,33 @@ module SocialCrawler
 
       data = load_output_cache(output_list_filename, log)
 
-      CSV.foreach(domain_list_filename) do |row|
-        url = row[0]
-        if status.has_key?(url)
-          # already visited, skip
-        else
-          result = crawl_url(url, log)
-          if result[:success] == true
-            data[url] = result
-            _put_out(data, url, output_list_filename)
+      CSV.open(output_list_filename, "wb") do |output|
+        data.each do |k, v|
+          output << [k, v[:title], v[:twitter], v[:facebook], v[:google_plus]]
+        end
+        CSV.open(status_filename, "wb") do |status_line|
+          status.each do |k, v|
+            status_line << [k, v[:success], v[:message]]
           end
-          _status(status, url, result, status_filename)
+
+          CSV.foreach(domain_list_filename) do |row|
+            url = row[0]
+            if status.has_key?(url)
+              # already visited, skip
+            else
+              result = crawl_url(url, log)
+              if result[:success] == true
+                data[url] = result
+                output << [url, result[:title], result[:twitter], result[:facebook], result[:google_plus]]
+              end
+              status[url] = {
+                  :url => url,
+                  :result => result[:success],
+                  :message => result[:message]
+              }
+              status_line << [url, result[:success], result[:message]]
+            end
+          end
         end
       end
     end
@@ -168,5 +166,7 @@ module SocialCrawler
 end
 
 if __FILE__ == $0
+  # :nocov:
   SocialCrawler::SocialCrawler.new.crawl(ARGV[0], ARGV[1], ARGV[2])
+  # :nocov:
 end

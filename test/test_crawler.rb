@@ -12,8 +12,14 @@ class CrawlewrTest < Test::Unit::TestCase
   end
 
   def test_1
+    File.delete('/tmp/test_out.txt') if File.exists?('/tmp/test_out.txt')
+    File.delete('/tmp/test_status.txt') if File.exists?('/tmp/test_status.txt')
+
     sc = SocialCrawler::SocialCrawler.new
-    sc.crawl('test/test_url.txt','/tmp/test_out.txt','/tmp/test_status.txt')
-  end
+    sc.crawl('test/test_url.txt', '/tmp/test_out.txt', '/tmp/test_status.txt')
+
+    sc = SocialCrawler::SocialCrawler.new
+    sc.crawl('test/test_url.txt', '/tmp/test_out.txt', '/tmp/test_status.txt')
+   end
 
 end
