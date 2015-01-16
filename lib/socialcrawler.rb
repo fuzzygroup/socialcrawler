@@ -24,6 +24,14 @@ module SocialCrawler
 
   class SocialCrawler
 
+    def initialize
+      @map = {
+          twitter: 'twitter.com/',
+          facebook: 'facebook.com/',
+          google_plus: 'plus.google.com/'
+      }
+    end
+
     def _put(hash, symbol, value, log=nil)
       log = Logger.new(STDOUT) if log.nil?
       if not hash.has_key?(symbol)
@@ -31,6 +39,18 @@ module SocialCrawler
       else
         hash[symbol] = "#{hash[symbol]} #{value}"
         log.info("Multiple values for #{symbol} value #{hash[symbol]}")
+      end
+    end
+
+    def page_to_result(page, result, log)
+      links = page.css('a[href]')
+      links.each do |link|
+        link_url = link['href']
+        @map.each do |k, prefix|
+          if not link_url.index(prefix).nil?
+            _put(result, k, link_url, log)
+          end
+        end
       end
     end
 
@@ -44,23 +64,7 @@ module SocialCrawler
         if not title.nil?
           result[:title] = title.text.strip
         end
-        links = page.css('a[href]')
-        links.each do |link|
-          link_url = link['href']
-
-          if not link_url.index('twitter.com/').nil?
-            log.info("twitter #{link_url} for #{url}")
-            _put(result, :twitter, link_url, log)
-          end
-          if not link_url.index('facebook.com/').nil?
-            log.info("facebook #{link_url} for #{url}")
-            _put(result, :facebook, link_url, log)
-          end
-          if not link_url.index('plus.google.com/').nil?
-            log.info("google_plus #{link_url} for #{url}")
-            _put(result, :google_plus, link_url, log)
-          end
-        end
+        page_to_result(page, result, log)
         result[:url] = url
         result[:success] = true
         result[:message] = ''
