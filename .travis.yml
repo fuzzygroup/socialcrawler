@@ -1,0 +1,10 @@
+language: ruby
+
+rvm:
+  - "1.9.3"
+  - jruby-19mode
+  - rbx
+
+addons:
+    climate_control:
+        repo_token: c5d1031f512ff1ec104782e87ba1514dff71d8a564b928076e54bb67226552df
