@@ -77,7 +77,7 @@ module SocialCrawler
       if not status_filename.nil? and File.exists?(status_filename)
         log.info("Loading previous status from #{status_filename}")
         CSV.foreach(status_filename) do |row|
-          begin
+          if row.count >= 3
             url = row[0]
             result = row[1]
             message = row[2]
@@ -86,10 +86,6 @@ module SocialCrawler
                 :result => result,
                 :message => message
             }
-          rescue Exception => e
-            # :nocov:
-            log.info("Exception reading file #{e}")
-            # :nocov:
           end
         end
         log.info("Loading previous status from #{status_filename} finished, #{status.keys.length} loaded.")
@@ -166,7 +162,7 @@ module SocialCrawler
 end
 
 if __FILE__ == $0
-  # :nocov:
+  #:nocov:
   SocialCrawler::SocialCrawler.new.crawl(ARGV[0], ARGV[1], ARGV[2])
-  # :nocov:
+  #:nocov:
 end
