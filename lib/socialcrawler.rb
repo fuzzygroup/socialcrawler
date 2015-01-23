@@ -81,17 +81,13 @@ module SocialCrawler
       if not status_filename.nil? and File.exists?(status_filename)
         log.info("Loading previous status from #{status_filename}")
         CSV.foreach(status_filename) do |row|
-          if row.count < 3
-            next
+          if row.count >= 3
+            status[row[0]] = {
+                :url => row[0],
+                :result => row[1],
+                :message => row[2]
+            }
           end
-          url = row[0]
-          result = row[1]
-          message = row[2]
-          status[url] = {
-              :url => url,
-              :result => result,
-              :message => message
-          }
         end
         log.info("Loading previous status from #{status_filename} finished, #{status.keys.length} loaded.")
       end
@@ -106,21 +102,15 @@ module SocialCrawler
       end
       CSV.foreach(output_list_filename) do |row|
         log.info("Loading #{row} #{row.count}")
-        if row.count < 5
-          next
+        if row.count >= 5
+          data[url] = {
+              :url => row[0],
+              :title => row[1],
+              :twitter => row[2],
+              :facebook => row[3],
+              :google_plus => row[4]
+          }
         end
-        url = row[0]
-        title= row[1]
-        twitter = row[2]
-        facebook = row[3]
-        google_plus = row[4]
-        data[url] = {
-            :url => url,
-            :title => title,
-            :twitter => twitter,
-            :facebook => facebook,
-            :google_plus => google_plus
-        }
         log.info("Loading previous status from #{output_list_filename} finished, #{data.keys.length} loaded.")
       end
       return data
@@ -154,17 +144,27 @@ module SocialCrawler
           next
         end
         result = crawl_url(url, log)
-        if result[:success] == true
-          data[url] = result
-          output << [url, result[:title], result[:twitter], result[:facebook], result[:google_plus]]
-        end
-        status[url] = {
-            :url => url,
-            :result => result[:success],
-            :message => result[:message]
-        }
-        status_line << [url, result[:success], result[:message]]
+        set_data(result, url, data, output)
+        set_status(result, url, status, status_line)
       end
+    end
+
+    private
+
+    def set_data(result, url, data, output)
+      if result[:success] == true
+        data[url] = result
+        output << [url, result[:title], result[:twitter], result[:facebook], result[:google_plus]]
+      end
+    end
+
+    def set_status(result, url, status, status_line)
+      status[url] = {
+          :url => url,
+          :result => result[:success],
+          :message => result[:message]
+      }
+      status_line << [url, result[:success], result[:message]]
     end
   end
 end

@@ -20,6 +20,9 @@ class CrawlewrTest < Test::Unit::TestCase
 
     sc = SocialCrawler::SocialCrawler.new
     sc.crawl('test/test_url.txt', '/tmp/test_out.txt', '/tmp/test_status.txt')
+    
+    sc = SocialCrawler::SocialCrawler.new
+    sc.crawl('test/test_url.txt', '/tmp/test_out.txt', 'test_status.txt')
    end
 
 end
