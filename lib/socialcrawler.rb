@@ -84,7 +84,7 @@ module SocialCrawler
           if row.count < 3
             next
           end
-          status[url] = {
+          status[row[0]] = {
               :url => row[0],
               :result => row[1],
               :message => row[2]
