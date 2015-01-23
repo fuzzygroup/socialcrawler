@@ -84,13 +84,10 @@ module SocialCrawler
           if row.count < 3
             next
           end
-          url = row[0]
-          result = row[1]
-          message = row[2]
           status[url] = {
-              :url => url,
-              :result => result,
-              :message => message
+              :url => row[0],
+              :result => row[1],
+              :message => row[2]
           }
         end
         log.info("Loading previous status from #{status_filename} finished, #{status.keys.length} loaded.")
