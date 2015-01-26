@@ -81,13 +81,7 @@ module SocialCrawler
       if not status_filename.nil? and File.exists?(status_filename)
         log.info("Loading previous status from #{status_filename}")
         CSV.foreach(status_filename) do |row|
-          if row.count >= 3
-            status[row[0]] = {
-                :url => row[0],
-                :result => row[1],
-                :message => row[2]
-            }
-          end
+          set_status_cache_data(status,row)
         end
         log.info("Loading previous status from #{status_filename} finished, #{status.keys.length} loaded.")
       end
@@ -101,16 +95,7 @@ module SocialCrawler
         return data
       end
       CSV.foreach(output_list_filename) do |row|
-        log.info("Loading #{row} #{row.count}")
-        if row.count >= 5
-          data[row[0]] = {
-              :url => row[0],
-              :title => row[1],
-              :twitter => row[2],
-              :facebook => row[3],
-              :google_plus => row[4]
-          }
-        end
+        set_output_cache_data(data,row)
         log.info("Loading previous status from #{output_list_filename} finished, #{data.keys.length} loaded.")
       end
       return data
@@ -165,6 +150,29 @@ module SocialCrawler
           :message => result[:message]
       }
       status_line << [url, result[:success], result[:message]]
+    end
+
+    def set_output_cache_data(data,row)
+      log.info("Loading #{row} #{row.count}")
+      if row.count >= 5
+        data[row[0]] = {
+            :url => row[0],
+            :title => row[1],
+            :twitter => row[2],
+            :facebook => row[3],
+            :google_plus => row[4]
+        }
+      end
+    end
+
+    def set_status_cache_data(status,row)
+      if row.count >= 3
+        status[row[0]] = {
+            :url => row[0],
+            :result => row[1],
+            :message => row[2]
+        }
+      end
     end
   end
 end
