@@ -149,17 +149,27 @@ module SocialCrawler
           next
         end
         result = crawl_url(url, log)
-        if result[:success] == true
-          data[url] = result
-          output << [url, result[:title], result[:twitter], result[:facebook], result[:google_plus]]
-        end
-        status[url] = {
-            :url => url,
-            :result => result[:success],
-            :message => result[:message]
-        }
-        status_line << [url, result[:success], result[:message]]
+        set_data(result, url, data, output)
+        set_status(result, url, status, status_line)
       end
+    end
+
+    private
+
+    def set_data(result, url, data, output)
+      if result[:success] == true
+        data[url] = result
+        output << [url, result[:title], result[:twitter], result[:facebook], result[:google_plus]]
+      end
+    end
+
+    def set_status(result, url, status, status_line)
+      status[url] = {
+          :url => url,
+          :result => result[:success],
+          :message => result[:message]
+      }
+      status_line << [url, result[:success], result[:message]]
     end
   end
 end
