@@ -103,7 +103,7 @@ module SocialCrawler
       CSV.foreach(output_list_filename) do |row|
         log.info("Loading #{row} #{row.count}")
         if row.count >= 5
-          data[url] = {
+          data[row[0]] = {
               :url => row[0],
               :title => row[1],
               :twitter => row[2],
