@@ -103,17 +103,12 @@ module SocialCrawler
       CSV.foreach(output_list_filename) do |row|
         log.info("Loading #{row} #{row.count}")
         if row.count >= 5
-          url = row[0]
-          title= row[1]
-          twitter = row[2]
-          facebook = row[3]
-          google_plus = row[4]
           data[url] = {
-              :url => url,
-              :title => title,
-              :twitter => twitter,
-              :facebook => facebook,
-              :google_plus => google_plus
+              :url => row[0],
+              :title => row[1],
+              :twitter => row[2],
+              :facebook => row[3],
+              :google_plus => row[4]
           }
         end
         log.info("Loading previous status from #{output_list_filename} finished, #{data.keys.length} loaded.")
