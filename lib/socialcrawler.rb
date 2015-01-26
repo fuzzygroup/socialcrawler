@@ -153,7 +153,6 @@ module SocialCrawler
     end
 
     def set_output_cache_data(data,row)
-      log.info("Loading #{row} #{row.count}")
       if row.count >= 5
         data[row[0]] = {
             :url => row[0],
