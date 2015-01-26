@@ -1,2 +1,4 @@
 https://twitter.com/bugaco,,""
-#dummy
+https://plus.google.com/101033631762132540828/posts,true,""
+https://www.facebook.com/,true,""
+https://localhost/,false,"Connection refused - connect(2) for ""localhost"" port 443"
