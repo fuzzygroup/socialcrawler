@@ -28,7 +28,12 @@ module SocialCrawler
       @map = {
           twitter: 'twitter.com/',
           facebook: 'facebook.com/',
-          google_plus: 'plus.google.com/'
+          google_plus: 'plus.google.com/',
+          instagram: 'www.instagram.com',
+          you_tube: 'youtube.com/user',
+          pinterest: 'pinterest.com/',
+          linked_in: 'linkedin.com/',
+          flickr: 'flickr.com/'
       }
     end
 
@@ -57,7 +62,7 @@ module SocialCrawler
     def crawl_url(url, log=nil)
       log = Logger.new(STDOUT) if log.nil?
       log.info("Crawling #{url}")
-      result = Hash.new('NOT FOUND')
+      result = Hash.new(:NOT_FOUND)
       begin
         page = Nokogiri::HTML(open(url))
         title = page.css('title')
